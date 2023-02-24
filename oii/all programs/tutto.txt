@@ -1,0 +1,30 @@
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+public class main {
+    public int solve(int N, Integer[] C) {
+        Arrays.sort(C);
+        return C[N-1];
+    }
+
+        public static void main(String[] args) throws FileNotFoundException, IOException {
+        BufferedReader br = new BufferedReader(new FileReader("input.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("output.txt"));
+    
+        int N = Integer.parseInt(br.readLine());
+        Integer[] C = new Integer[N];
+        String[] input = br.readLine().split(" ");
+        for (int i = 0; i < N; i++) {
+            C[i] = Integer.parseInt(input[i]);
+        }
+    
+        main solver = new main();
+        int risposta = solver.solve(N, C);
+    
+        bw.write("" + risposta);
+        bw.newLine();
+        bw.flush();
+        bw.close();
+    }
+}
