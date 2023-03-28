@@ -1,14 +1,12 @@
 import java.util.*;
 import java.io.*;
 
-class Main {
-
+class escursione {
     // ------------------ INIZIO implementazione dell'oggetto Grafo ---------
     static class Nodo implements Comparable<Nodo>{
         int id;
         int costoPercorso;
-        int bigger;
-        Nodo padre;
+        Nodo padre = null;
         ArrayList<Arco> archi;
         public Nodo( int id ){
             this.id = id;
@@ -29,9 +27,6 @@ class Main {
     static class Arco{
         Nodo a;
         int peso;
-        // il costruttore di un arco inserisce anche l'arco stesso
-        // nel nodo relativo, il parametro "da" viene ignorato
-        // in questa implementazione
         public Arco(int da, int a, int peso){
             this.a = grafo[a];
             this.peso = peso;
@@ -42,42 +37,19 @@ class Main {
         }
     }
     static Nodo grafo[];
-    // ------------------ FINE implementazione dell'oggetto Grafo -----------
-
-    // ------ stampe di utilità (in pratica solo robe decorative) -----------
-    static void dump(){
-        for(Nodo n:grafo){
-            System.out.println(n);
-        }
-    }
-    static void coperturaDump(){
-        System.out.print("P");
-        Nodo n=null;
-        for(int i=0; i<grafo.length; i++){
-            if(grafo[i].padre==null){
-                n = grafo[i];
-                break;
-            }
-        }
-        coperturaDumpRec(0, n);
-    }
-    private static void coperturaDumpRec(int nest, Nodo n){
-        String indent = new String(new char[nest*2]).replace('\0', ' ');
-        System.out.println(indent+n);
-        for(int i=0; i<grafo.length; i++){
-            if(grafo[i].padre == n){
-                coperturaDumpRec(nest+1, grafo[i]);
-            }
-        }
-    }
 
     // ---------- Dijkstra ----------
+    static int tuttoCammino(Nodo x, int mS){
+        if(x.padre == null){
+            return mS;
+        }
+        return tuttoCammino(x.padre, (x.costoPercorso > mS) ? x.costoPercorso : mS);
+    }
+
     static void camminiMinimi(Nodo x){
-        // pulizia
         for(Nodo n: grafo){
             n.costoPercorso = Integer.MAX_VALUE;
             n.padre = null;
-            n.bigger = 0;
         }
 
         // costruzione partenza
@@ -89,21 +61,30 @@ class Main {
         while( !s.isEmpty() ){
             Nodo attuale = s.poll();
             for(Arco a: attuale.archi){
+                
                 Nodo vicino = a.a;
-                int nDist = attuale.costoPercorso + a.peso;
-                if( nDist < vicino.costoPercorso ){
+                
+                int nDist = (attuale.costoPercorso < a.peso) ? a.peso : attuale.costoPercorso;
+                if( nDist < vicino.costoPercorso){
                     vicino.costoPercorso = nDist;
                     vicino.padre = attuale;
                     s.add(vicino);
-                    if(a.peso > attuale.bigger) {a.a.bigger = a.peso;} else {a.a.bigger = attuale.bigger;}
                 }
             }
         }
     }
 
-    public int solve(){
-        return 0;
+    public static void dump(int W){
+        for (int i = 0; i < grafo.length; i++) {
+            if(i%W==0){
+                System.out.println("");
+            }
+            System.out.print(grafo[i].costoPercorso+" ");
+        }
+        System.out.println("");
+        System.out.println("");
     }
+
 
     public static void main(String[] args) throws Exception{
         InputStream fin = new FileInputStream("input.txt");
@@ -124,23 +105,22 @@ class Main {
                 altitudini[i] = scn.nextInt();
             }
 
-            //int numeroArchi = (R-1)*C+(C-1)*R;
             for (int h = 0, i = 0; h < R; h++) {
                 for (int w = 0; w < C; w++, i++) {
-                    if(w!=0){   new Arco( i, i-1, Math.abs(altitudini[i]-altitudini[i-1]) ); } // LEFT
-                    if(h!=0){   new Arco( i, i-C, Math.abs(altitudini[i]-altitudini[i-C]) ); } // TOP
-                    if(w!=C-1){ new Arco( i, i+1, Math.abs(altitudini[i]-altitudini[i+1]) ); } // RIGHT
-                    if(h!=R-1){ new Arco( i, i+C, Math.abs(altitudini[i]-altitudini[i+C]) ); } // BOTTOM
+                    if(w!=0)  { new Arco( i, i-1, Math.abs( altitudini[i]-altitudini[i-1] ));} // LEFT
+                    if(h!=0)  { new Arco( i, i-C, Math.abs( altitudini[i]-altitudini[i-C] ));} // TOP
+                    if(w!=C-1){ new Arco( i, i+1, Math.abs( altitudini[i]-altitudini[i+1] ));} // RIGHT
+                    if(h!=R-1){ new Arco( i, i+C, Math.abs( altitudini[i]-altitudini[i+C] ));} // BOTTOM
                 }
             }
-
             camminiMinimi(grafo[0]);
-            coperturaDump();
-            System.out.println("===========");
-            prnt.format("Case #%d: %s\n", t, ""+grafo[numeroNodi-1].bigger);
+            //dump(C);
+            int rs = tuttoCammino(grafo[grafo.length-1], 0);
+            prnt.format("Case #%d: %s\n", t, rs);
             fout.flush();
         }
         scn.close();
         fin.close();
+        prnt.close();
     }
 }
