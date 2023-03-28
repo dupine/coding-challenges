@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 
-public class mele {
+public class vacanze {
 
         // ------------------ INIZIO implementazione dell'oggetto Grafo ---------
         static class Nodo implements Comparable<Nodo>{
@@ -52,9 +52,7 @@ public class mele {
                     Nodo vicinoDelVicino = aa.a;
                     for(Arco aaa: vicino.archi){
                         Nodo vicinoDelVicinoDelVicino = aaa.a;
-                        if(){
 
-                        }
                         
                         
                     }
@@ -103,7 +101,7 @@ public class mele {
                 B[i] = scn.nextInt();
             }*/
 
-            mele solver = new mele();
+            vacanze solver = new vacanze();
             int risposta = solver.solve(N, M);
 
             prnt.format("Case #%d: %d\n", t, risposta);

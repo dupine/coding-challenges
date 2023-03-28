@@ -4,7 +4,9 @@ import java.lang.*;
 
 public class ostacoli {
 
-    int memo[][];
+    long memo[][];
+    int tMax = 0;
+    int dMax = 0;
     ArrayList<ostacolo> ostacoli;
     public class ostacolo {
         int id = 0;
@@ -20,8 +22,10 @@ public class ostacoli {
         }
     }
 
-    public int solve(int N, int L, int D, int[] X, int[] P, int[] S) {
+    public long solve(int N, int L, int D, int[] X, int[] P, int[] S) {
         ostacoli = new ArrayList<>();
+        this.tMax = D;
+        this.dMax = L;
         int i = 0;
         for (int index = 0; index < N; index++) {
             if (X[index] <= S[index]) {
@@ -29,13 +33,13 @@ public class ostacoli {
             }
         }
 
-        memo = new int[ostacoli.size()][ostacoli.size()];
-        int risposta = rec(null, ostacoli.get(0));
+        memo = new long[ostacoli.size()][ostacoli.size()];
+        long risposta = rec(null, ostacoli.get(0));
 
         return risposta;
     }
 
-    private static int max3(int i1, int i2, int i3){
+    private static long max3(long i1, long i2, long i3){
         if(i1>i2){
             return i1>i3 ? i1 : i3;
         } else {
@@ -43,20 +47,17 @@ public class ostacoli {
         }
     }
 
-    public int rec(ostacolo prec, ostacolo act) {
-
+    public long rec(ostacolo prec, ostacolo act) {
 
         if(prec!=null && Math.abs(prec.tempo-act.tempo) < Math.abs(prec.pos-act.pos) ){
             return 0;
         }
  
-        if(act.id == ostacoli.size()-1){
-            return act.punti;
-        }
+        if(act.id == ostacoli.size()-1) return act.punti;
 
-        int prendo = 0;
-        int nonPrendo = 0;
-        int salto = 0;
+        long prendo = 0;
+        long nonPrendo = 0;
+        long salto = 0;
 
         if(memo[prec==null ? 0 : prec.id][act.id] !=0 )
             return memo[prec==null ? 0 : prec.id][act.id];
@@ -65,10 +66,10 @@ public class ostacoli {
         prendo = act.punti + rec(act, ostacoli.get(act.id+1));
 
         // non prendo
-        nonPrendo = rec(act, ostacoli.get(act.id+1));
+        nonPrendo = rec(prec, ostacoli.get(act.id+1));
 
         // salto
-        //salto = act.punti + rec(prec, ostacoli.get(act.id+1));
+        //salto = rec(prec, ostacoli.get(act.id+1));
         
         memo[prec==null ? 0 : prec.id][act.id] = max3(prendo, nonPrendo, salto);
         return memo[prec==null ? 0 : prec.id][act.id];
@@ -82,8 +83,8 @@ public class ostacoli {
         InputStream fin;
         OutputStream fout;
         if (input_from_file) {
-            fin = new FileInputStream("input.txt");
-            fout = new FileOutputStream("output.txt");
+            fin = new FileInputStream("latest/input.txt");
+            fout = new FileOutputStream("latest/output.txt");
         } else {
             fin = System.in;
             fout = System.out;
@@ -108,7 +109,7 @@ public class ostacoli {
             }
 
             ostacoli solver = new ostacoli();
-            int risposta = solver.solve(N, L, D, X, P, S);
+            long risposta = solver.solve(N, L, D, X, P, S);
 
             prnt.format("Case #%d: %d\n", t, risposta);
             fout.flush();

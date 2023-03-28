@@ -4,90 +4,61 @@ import java.lang.*;
 
 public class Ostacoli1 {
     
-    static int memo[][];
-
-    static class Ostacolo {
-        int pos, diff, points, time;
-
-        Ostacolo(int pos, int diff, int points, int time) {
-            this.pos = pos;
-            this.diff = diff;
-            this.points = points;
-            this.time = time;
-        }
-    }
-
-    public static int solve(int N, int L, int D, Ostacolo[] ostacoli) {
-        memo = new int[N][N];
+    public static int solve(int N, int L, int D, int[] X, int[] P, int[] S) {
+        final int INF = 1000000000;
+        int[] dp = new int[N];
         for (int i = 0; i < N; i++) {
-            Arrays.fill(memo[i], -1);
+            dp[i] = -INF;
+            if (S[i] >= X[i]) dp[i] = Math.max(dp[i], P[i]);
+            for (int j = 0; j < i; j++)
+                if (S[i] - S[j] >= Math.abs(X[i] - X[j]))
+                    dp[i] = Math.max(dp[i], dp[j] + P[i]);
         }
-        int ans = 0;
-        for (int i = N - 1; i >= 0; i--) {
-            ans = Math.max(ans, rec(i, i, N, L, D, ostacoli));
-        }
-        return ans;
-    }
 
-    public static int rec(int start, int end, int N, int L, int D, Ostacolo[] ostacoli) {
-        if (end == N) {
-            return 0;
-        }
-        if (memo[start][end] != -1) {
-            return memo[start][end];
-        }
         int ans = 0;
-        for (int i = end; i < N; i++) {
-            if (ostacoli[i].time > D) {
-                break;
-            }
-            if (ostacoli[i].pos - ostacoli[start].pos > ostacoli[start].time - ostacoli[i].time) {
-                continue;
-            }
-            int timeDiff = ostacoli[start].time - ostacoli[i].time;
-            int posDiff = ostacoli[start].pos - ostacoli[i].pos;
-            int score = ostacoli[i].points;
-            ans = Math.max(ans, score + rec(i, end + 1, N, L, D - timeDiff, ostacoli));
-        }
-        memo[start][end] = ans;
+        for (int i = 0; i < N; i++)
+            ans = Math.max(ans, dp[i]);
+
         return ans;
     }
-    
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
-        int T = Integer.parseInt(br.readLine());
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        // se preferisci leggere e scrivere da file
+        // ti basta modificare la seguente variabile
+        boolean input_from_file = true;
+
+        InputStream fin;
+        OutputStream fout;
+        if (input_from_file) {
+            fin = new FileInputStream("latest/input.txt");
+            fout = new FileOutputStream("latest/output.txt");
+        } else {
+            fin = System.in;
+            fout = System.out;
+        }
+
+        Scanner scn = new Scanner(fin);
+        PrintStream prnt = new PrintStream(fout);
+
+        int T = scn.nextInt();
         for (int t = 1; t <= T; t++) {
-            br.readLine();
-            String[] line1 = br.readLine().split(" ");
-            int N = Integer.parseInt(line1[0]);
-            int L = Integer.parseInt(line1[1]);
-            int D = Integer.parseInt(line1[2]);
-            String[] line2 = br.readLine().split(" ");
-        String[] line3 = br.readLine().split(" ");
-        Ostacolo[] ostacoli = new Ostacolo[N];
-        for (int i = 0; i < N; i++) {
-            int pos = Integer.parseInt(line2[i]);
-            int diff = Integer.parseInt(line3[i]);
-            int points = 0;
-            int time = 0;
-            ostacoli[i] = new Ostacolo(pos, diff, points, time);
-        }
-        Arrays.sort(ostacoli, new Comparator<Ostacolo>() {
-            public int compare(Ostacolo a, Ostacolo b) {
-                return a.pos - b.pos;
+            int N = scn.nextInt();
+            int L = scn.nextInt();
+            int D = scn.nextInt();
+
+            int[] X = new int[N];
+            int[] P = new int[N];
+            int[] S = new int[N];
+            for (int i = 0; i < N; i++) {
+                X[i] = scn.nextInt();
+                P[i] = scn.nextInt();
+                S[i] = scn.nextInt();
             }
-        });
-        for (int i = 0; i < N; i++) {
-            int pos = ostacoli[i].pos;
-            int diff = ostacoli[i].diff;
-            int points = i + 1;
-            int time = (int) Math.ceil((double) diff / L);
-            ostacoli[i] = new Ostacolo(pos, diff, points, time);
+
+            Ostacoli1 solver = new Ostacoli1();
+            int risposta = solver.solve(N, L, D, X, P, S);
+
+            prnt.format("Case #%d: %d\n", t, risposta);
+            fout.flush();
         }
-        int ans = solve(N, L, D, ostacoli);
-        pw.println(ans);
-    }
-    pw.close();
     }
 }
