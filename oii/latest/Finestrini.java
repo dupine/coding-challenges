@@ -10,7 +10,7 @@ public class Finestrini {
         this.max = N;
         this.L = L;
         this.R = R;
-        this.mem = new int[N][2][2];
+        this.mem = new int[N][2][3];
 
         int resR = rec(0, true, 0);
         int resL = rec(0, false, 0);
