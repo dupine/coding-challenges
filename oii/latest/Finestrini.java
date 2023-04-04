@@ -10,7 +10,15 @@ public class Finestrini {
         this.max = N;
         this.L = L;
         this.R = R;
-        this.mem = new int[N][2][2];
+        mem = new int[N][2][3];
+        for(int i=0; i<N; i++){
+            for(int k=0; k<N; k++){
+                for(int r=0; r<N; r++){
+                    mem[i][k][r] = -1;
+                }
+            }
+        }
+
 
         int resR = rec(0, true, 0);
         int resL = rec(0, false, 0);
@@ -22,20 +30,20 @@ public class Finestrini {
         int costo = right? R[posto] : L[posto];
         quantiGiaMessi++;
     
-        if(mem[posto][right ? 0 : 1][right ? 1 : 0] != 0)
-            return mem[posto][right ? 0 : 1][right ? 1 : 0];
+        if(mem[posto][right ? 0 : 1][quantiGiaMessi] != 0)
+            return mem[posto][right ? 0 : 1][quantiGiaMessi];
 
         if(posto != R.length-1){
             if(quantiGiaMessi==2){
-                mem[posto][right ? 0 : 1][right ? 1 : 0] = costo + rec(posto+1, !right, 0);
+                costo += rec(posto+1, !right, 0);
             } else {
                 int costoAltro = rec(posto+1, !right, 0);
                 int costoStesso = rec(posto+1, right, quantiGiaMessi);
-                mem[posto][right ? 0 : 1][right ? 0 : 1] = costo + Math.min(costoAltro, costoStesso);
+                costo += Math.min(costoAltro, costoStesso);
             }
         }
 
-        return costo;
+        return mem[posto][right ? 0 : 1][quantiGiaMessi] = costo;
     }
 
     

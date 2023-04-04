@@ -19,7 +19,7 @@ public class ostacoli {
             this.pos = pos;
             this.punti = punti;
             this.tempo = tempo;
-        }
+            }
     }
 
     public long solve(int N, int L, int D, int[] X, int[] P, int[] S) {
