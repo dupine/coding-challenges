@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 
-public class vacanze {
+public class vacanze2 {
 
         // ------------------ INIZIO implementazione dell'oggetto Grafo ---------
         static class Nodo{
@@ -41,23 +41,26 @@ public class vacanze {
 
         int x = 0;
         for (int i = 0; i < grafo.length; i++) {
-            x = rec(grafo[i], grafo[i], 0, 0, null, null);
-            if(x!=0){ comb.add(x);}
+            x += rec(grafo[i], grafo[i], null,  0, null, null, "");
+            //if(x!=0){ comb.add(x);}
         }
 
-        return comb.size();
+        return x;
     }
 
-    public int rec(Nodo princ, Nodo act, int checked, int combos, Nodo b, Nodo c){
+    public int rec(Nodo princ, Nodo act, Nodo prec, int checked, Nodo b, Nodo c, String s){
+        //System.out.println(s+princ.id+", "+( b!=null ? b.id : "b")+", "+( c!=null ? c.id : "c"));
         if(checked==4 && act!=princ) return 0;
+        else if(checked==4 && act==princ) return 1;
 
+        int combos = 0;
         for(Arco a: act.archi)
-            if(a.a!=b && a.a!=c && a.a!=act)
-                combos += a.a.id + rec(princ, a.a, checked+1, combos+a.a.id, ( b==null ? act : b), (c==null ? act : (b==null ? null : act) ) );
-            else
-                return 0;
-
-        return exists(combos) ? 0 : combos;
+            if(prec!=null ? a.a!=prec : true)
+                if((checked==3 ? a.a!=b : true) && (checked==2 ? a.a!=princ : true))
+                    combos += rec(princ, a.a, act, checked+1, (checked==1 ? act : b), (checked==2 ? act : c), s+" ");
+                else return 0;  
+            
+        return combos;
     }
 
     public boolean exists(int x){
@@ -98,7 +101,7 @@ public class vacanze {
             }
             */
             
-            vacanze solver = new vacanze();
+            vacanze2 solver = new vacanze2();
             int risposta = solver.solve(N, M);
 
             prnt.format("Case #%d: %d\n", t, risposta);
