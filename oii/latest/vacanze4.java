@@ -7,7 +7,9 @@ public class vacanze2 {
         // ------------------ INIZIO implementazione dell'oggetto Grafo ---------
         static class Nodo{
             int id;
-            Nodo padre = null;
+            int costoPercorso;
+            boolean visitato = false;
+            Nodo padre;
             ArrayList<Arco> archi;
             public Nodo( int id ){
                 this.id = id;
@@ -18,7 +20,7 @@ public class vacanze2 {
                 for(Arco a: archi){
                     vicini+=a;
                 }
-                return "{"+id+" ^"+(padre==null?"-":padre.id)+"} "+vicini;
+                return "{"+id+" $:"+costoPercorso+" ^"+(padre==null?"-":padre.id)+"} "+vicini;
             }
         }
 
@@ -28,43 +30,51 @@ public class vacanze2 {
                 this.a = grafo[a];
                 grafo[da].archi.add(this);
             }
-            public String toString(){
-                return "[→"+a.id+"]";
-            }
         }
 
     static Nodo grafo[];
-    static ArrayList<int[]> comb;
+    static ArrayList<Integer> comb;
 
     public int solve(int N, int M) {
 
         comb = new ArrayList<>();
 
+        int x = 0;
         for (int i = 0; i < grafo.length; i++) {
-            int[] vec = {grafo[i].id, 0, 0, 0};
-            rec(grafo[i], grafo[i], null,  0, null, vec);
+            x += rec(grafo[i], grafo[i], null,  0, null, null, "", grafo[i].id);
+            //if(x!=0){ comb.add(x);}
         }
-        return counter();
+
+        /*for (int i = 0; i < comb.size(); i++) {
+            System.out.println(comb.get(i));
+        }System.out.println(".................");
+        */
+        return x;
     }
 
-    public int rec(Nodo princ, Nodo act, Nodo prec, int checked, Nodo b, int[] vec){
+    public int rec(Nodo princ, Nodo act, Nodo prec, int checked, Nodo b, Nodo c, String s, int idSum){
         //System.out.println(s+princ.id+", "+( b!=null ? b.id : "b")+", "+( c!=null ? c.id : "c"));
-        //System.out.println(s+""+princ.id+" - " + act.id + " :"+checked);
+        System.out.println(s+""+princ.id+" - " + act.id + " :"+checked);
+
         int combos = 0;
-        if(checked==2) if(search(act, princ)) return 0;
-        if(checked==3) if(checked!=0) if(searchFinal(act, b, princ)){/*for (int x : vec) System.out.print(x); System.out.println();*/  comb.add(vec); return 1;} else return 0;
         for(Arco a: act.archi)
-            if(prec!=null ? a.a!=prec : true){  
-                vec[checked+1]=a.a.id;
-                combos = rec(princ, a.a, act, checked+1, (checked==1 ? act : b), vec);  
-            }
+            if(prec!=null ? a.a!=prec : true){
+
+                if(checked==2) if(search(act, princ)) combos += rec(princ, a.a, act, checked+1, (checked==1 ? act : b), (checked==2 ? act : c), s+" ", idSum+a.a.id);
+                if(checked==3)
+                    searchFinal(act, )
+                if(checked==3 && a.a==princ) return 1;
+
+                combos += rec(princ, a.a, act, checked+1, (checked==1 ? act : b), (checked==2 ? act : c), s+" ", idSum+a.a.id);            
+            }    
+
         return combos;
     }
 
     public boolean search(Nodo x, Nodo y){
         for(Arco a: x.archi)
-            if(a.a==y) return true;
-        return false;
+            if(a.a==y) return false;
+        return true;
     }
 
     public boolean searchFinal(Nodo x, Nodo y, Nodo z){
@@ -78,19 +88,11 @@ public class vacanze2 {
         else return false;
     }
 
-    public int counter(){
-        Set<String> uniqueArrays = new HashSet<>();
-        for (int[] array : comb) {
-            Arrays.sort(array);
-            if(array[0]!=array[1] && array[1]!=array[2] && array[2]!=array[3]) 
-                uniqueArrays.add(Arrays.toString(array));
-        }
-
-        for (String string : uniqueArrays) {
-            System.out.println(string);
-        }System.out.println("_______________");
-        
-        return uniqueArrays.size();
+    public boolean exists(int x){
+        for (int i = 0; i < comb.size(); i++)
+            if(comb.get(i)==x)
+                return true;
+        return false;
     }
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
@@ -119,8 +121,6 @@ public class vacanze2 {
                 new Arco(a, b);
                 new Arco(b, a);
             }
-
-            //dump();
 
             vacanze2 solver = new vacanze2();
             int risposta = solver.solve(N, M);
