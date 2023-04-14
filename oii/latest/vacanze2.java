@@ -39,26 +39,29 @@ public class vacanze2 {
     public int solve(int N, int M) {
 
         comb = new ArrayList<>();
-
+        int[] vec;
         for (int i = 0; i < grafo.length; i++) {
-            int[] vec = {grafo[i].id, 0, 0, 0};
+            vec = new int[]{grafo[i].id, 0, 0, 0};
             rec(grafo[i], grafo[i], null,  0, null, vec);
         }
+        /*for (int i[] : comb) {
+            for (int j : i) {
+                System.out.print(j);
+            }System.out.println();
+        }*/
         return counter();
     }
 
-    public int rec(Nodo princ, Nodo act, Nodo prec, int checked, Nodo b, int[] vec){
-        //System.out.println(s+princ.id+", "+( b!=null ? b.id : "b")+", "+( c!=null ? c.id : "c"));
-        //System.out.println(s+""+princ.id+" - " + act.id + " :"+checked);
-        int combos = 0;
-        if(checked==2) if(search(act, princ)) return 0;
-        if(checked==3) if(checked!=0) if(searchFinal(act, b, princ)){/*for (int x : vec) System.out.print(x); System.out.println();*/  comb.add(vec); return 1;} else return 0;
+    public void rec(Nodo princ, Nodo act, Nodo prec, int checked, Nodo b, int[] vec){
+        if(checked==2) if(search(act, princ)) return;
+        if(checked==3) if(searchFinal(act, b, princ)){int x[] = {vec[0], vec[1], vec[2], vec[3]}; /*for (int x : vec) System.out.print(x); System.out.println();*/  comb.add(x); return;} else return;
         for(Arco a: act.archi)
             if(prec!=null ? a.a!=prec : true){  
                 vec[checked+1]=a.a.id;
-                combos = rec(princ, a.a, act, checked+1, (checked==1 ? act : b), vec);  
+                rec(princ, a.a, act, checked+1, (checked==1 ? act : b), vec);  
             }
-        return combos;
+
+        return;
     }
 
     public boolean search(Nodo x, Nodo y){
@@ -70,10 +73,11 @@ public class vacanze2 {
     public boolean searchFinal(Nodo x, Nodo y, Nodo z){
         boolean fine = false;
 
-        for(Arco a: x.archi)
+        for(Arco a: x.archi){
             if(a.a==y) return false;
-            else if(a.a==z) fine = true;
-        
+            if(a.a==z) fine = true;
+        }
+
         if(fine) return true;
         else return false;
     }
@@ -85,11 +89,6 @@ public class vacanze2 {
             if(array[0]!=array[1] && array[1]!=array[2] && array[2]!=array[3]) 
                 uniqueArrays.add(Arrays.toString(array));
         }
-
-        for (String string : uniqueArrays) {
-            System.out.println(string);
-        }System.out.println("_______________");
-        
         return uniqueArrays.size();
     }
 
