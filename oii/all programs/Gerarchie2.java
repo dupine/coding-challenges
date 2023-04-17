@@ -1,8 +1,9 @@
+
 import java.util.*;
 import java.io.*;
 import java.lang.*;
 
-public class Gerarchie {
+public class Gerarchie2 {
 
     // ------------------ INIZIO implementazione dell'oggetto Grafo ---------
     static class Nodo{
@@ -23,7 +24,7 @@ public class Gerarchie {
             for (Arco a : archi) {
                 vicini += a;
             }
-            return "{" + id + " ^" + (padre == null ? "-" : padre.id) + "} " + vicini;
+            return "{" + id + "r: " + retrocedibile + " ^" + (padre == null ? "-" : padre.id) + "} " + vicini;
         }
     }
 
@@ -47,81 +48,65 @@ public class Gerarchie {
     }
 
     static Nodo grafo[];
-    int maxLayer = 0;
+    static int aLayer = 0;
     public int solve(int N, int first) {
-        
         grafo[first].layer = 0;
-        int maxLayer = 0;
-
         toOrder(null, grafo[first], 0);
-        //Arrays.sort(grafoPesi, (Nodo a, Nodo b)-> b.peso-a.peso );
-        Arrays.sort(grafo, (Nodo a, Nodo b)-> a.id-b.id );
-        for (Nodo n : grafo) if(n.layer>maxLayer) maxLayer = n.layer;
 
         int swaps = 0;
-        int r = 0;
-        for (int i = 0; i < maxLayer; i++) {
+        aLayer = 0;
+        int r = greater();
+        //if(grafo[r].padre==null) aLayer++;
+
+        while(r!=-1){
+            //System.out.println(r);
+            swaps += swap2(r);
             r = greater();
-            grafo[r].retrocedibile=false;
-            System.out.println(r);
-            swaps += swap2(r, i);
-            Arrays.sort(grafo, (Nodo a, Nodo b)-> a.id-b.id );
-            //dump();
         }
 
         return swaps;
     }
 
-    public int swap2(int idNodo, int layerMax){
-        Nodo father;
-        int swaps = 0;
-        int x = 0;
-        while(grafo[idNodo].layer>layerMax){
+    public int swap2(int idNodo){
+        int fatherPeso, swaps = 0;
+        boolean fatherRetrocedibile;
 
-            father = grafo[idNodo].padre;
-            x = father.id;
-            //System.out.println("id: "+x+", cambio: "+grafo[idNodo].id+", padre: "+grafo[idNodo].padre.id);
-            
-            // cambio il padre
-            grafo[idNodo].padre.peso = grafo[idNodo].peso;
-            grafo[idNodo].padre.id = grafo[idNodo].id;
+        if(grafo[idNodo].padre!=null && grafo[idNodo].padre.retrocedibile){
+            grafo[idNodo].retrocedibile = false;
 
-            // cambio quello attuale
-            grafo[idNodo].id = father.id;
-            grafo[idNodo].peso = father.peso;
+            while(grafo[idNodo].padre!=null && grafo[idNodo].padre.retrocedibile){
+                fatherPeso = grafo[idNodo].padre.peso;
+                fatherRetrocedibile = grafo[idNodo].padre.retrocedibile;
+                
+                //System.out.println("cambio: "+grafo[idNodo].id+", con: "+grafo[idNodo].padre.id);
 
-            // cambio archi
-            archChanger(grafo[idNodo], x);
 
-            idNodo = x;
+                grafo[idNodo].padre.retrocedibile = grafo[idNodo].retrocedibile;
+                grafo[idNodo].padre.peso = grafo[idNodo].peso;
 
-            swaps++;
-        }
+                grafo[idNodo].retrocedibile = fatherRetrocedibile;
+                grafo[idNodo].peso = fatherPeso;
 
+                //if(!grafo[idNodo].padre.padre.retrocedibile) grafo[idNodo].padre.retrocedibile = false;                
+                idNodo = grafo[idNodo].padre.id;
+                swaps++;
+            }
+        } else grafo[idNodo].retrocedibile = false;
         return swaps;
     }
 
     public int greater(){
-        int bigger = -1;
-        int id = -1;
+        int bigger = -1, id = -1;
         for (Nodo nodo : grafo) {
-            if(nodo.retrocedibile){
-                System.out.println(nodo.id);
+            if(nodo.retrocedibile && nodo.layer>=aLayer){
                 if(nodo.peso>bigger){
                     bigger = nodo.peso;
                     id = nodo.id;
                 }
             }
         }
-        //System.out.println(id);
         return id;
         
-    }
-
-    public void archChanger(Nodo act, int idPadre){
-        for (Arco a : act.archi) {
-            if(a.a.id==idPadre) a.a = grafo[idPadre];
-        }
     }
 
     public void toOrder(Nodo prec, Nodo n, int layer){
@@ -166,12 +151,12 @@ public class Gerarchie {
 
             //dump();
 
-            Gerarchie solver = new Gerarchie();
+            Gerarchie2 solver = new Gerarchie2();
             int risposta = solver.solve(N, first);
 
             prnt.format("Case #%d: %d\n", t, risposta);
             fout.flush();
-            System.out.println("==================0");
+            System.out.println("==================");
         }
     }
 }

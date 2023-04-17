@@ -64,9 +64,9 @@ public class palindromo2 {
             grafo[B[i]].archi.add(new Arco(B[i], A[i], L[i]));
         }
 
-        dump();
+        //dump();
 
-        camminiMinimi(grafo[X]);
+        //camminiMinimi(grafo[X]);
 
         return grafo[Y].costoPercorso;
     }
