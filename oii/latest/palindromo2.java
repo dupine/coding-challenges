@@ -9,6 +9,7 @@ public class palindromo2 {
     static class Nodo implements Comparable<Nodo> {
         int id;
         int costoPercorso;
+        boolean visitato = false;
         Nodo padre;
         ArrayList<Arco> archi;
 
@@ -36,10 +37,7 @@ public class palindromo2 {
         Nodo a;
         int peso=1;
         char lettera;
-
-        // il costruttore di un arco inserisce anche l'arco stesso
-        // nel nodo relativo, il parametro "da" viene ignorato
-        // in questa implementazione
+        
         public Arco(int da, int a, char lettera) {
             this.a = grafo[a];
             this.lettera = lettera;
@@ -74,6 +72,22 @@ public class palindromo2 {
     static void dump() {
         for (Nodo n : grafo) {
             System.out.println(n);
+        }
+    }
+
+    public static void BFS(Nodo start){
+        Queue<Nodo> queue = new LinkedList<>();
+        queue.add(start);
+       
+        while(!queue.isEmpty()){
+            Nodo current = queue.poll();       
+            for(Arco a: current.archi){
+                Nodo neighbor = a.a;
+                if(!neighbor.visitato){            
+                    neighbor.visitato = true;
+                    queue.add(neighbor);
+                }
+            }
         }
     }
 
