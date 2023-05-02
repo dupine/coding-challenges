@@ -2,22 +2,13 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 
-public class Finestrini {
+public class finestrini1 {
     int max = 0;
     int[] L, R;
-    int mem[][][];
     public int solve(int N, int[] L, int[] R) {
+        this.max = N;
         this.L = L;
         this.R = R;
-        mem = new int[N][2][3];
-
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < 2; j++) {
-                for (int j2 = 0; j2 < 3; j2++) {
-                    mem[i][j][j2] = -1;
-                }
-            }
-        }
 
         int resR = rec(0, true, 0);
         int resL = rec(0, false, 0);
@@ -30,20 +21,16 @@ public class Finestrini {
         quantiGiaMessi++;
 
         if(posto != R.length-1){
-
-            if(mem[posto][right ? 0 : 1][quantiGiaMessi] != -1)
-                return mem[posto][right ? 0 : 1][quantiGiaMessi];
-                
             if(quantiGiaMessi==2){
-                mem[posto][right ? 0 : 1][quantiGiaMessi] = costo + rec(posto+1, !right, 0);;
+                costo += rec(posto+1, !right, 0);
             } else {
                 int costoAltro = rec(posto+1, !right, 0);
                 int costoStesso = rec(posto+1, right, quantiGiaMessi);
-                mem[posto][right ? 0 : 1][quantiGiaMessi] = costo + Math.min(costoAltro, costoStesso);
+                costo += Math.min(costoAltro, costoStesso);
             }
         }
 
-        return  mem[posto][right ? 0 : 1][quantiGiaMessi];
+        return costo;
     }
 
     
@@ -74,7 +61,7 @@ public class Finestrini {
                 R[i] = scn.nextInt();
             }
 
-            Finestrini solver = new Finestrini();
+            finestrini1 solver = new finestrini1();
             int risposta = solver.solve(N, L, R);
 
             prnt.format("Case #%d: %d\n", t, risposta);
