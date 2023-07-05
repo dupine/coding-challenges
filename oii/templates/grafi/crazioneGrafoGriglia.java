@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 
 class creazioneGrafoGriglia {
-    // ------------------ INIZIO implementazione dell'oggetto Grafo ---------
+    // =================== IMPLEMENTAZIONE OGGETTO GRAFO ======================
     static class Nodo implements Comparable<Nodo>{
         int id;
         int costoPercorso;
@@ -24,6 +24,7 @@ class creazioneGrafoGriglia {
             return this.costoPercorso - o.costoPercorso;
         }
     }
+
     static class Arco{
         Nodo a;
         int peso;
@@ -38,7 +39,9 @@ class creazioneGrafoGriglia {
     }
     static Nodo grafo[];
 
-    // ---------- Dijkstra ----------
+
+
+    // =================== PERCORSO INVERSO ======================
     static int tuttoCammino(Nodo x, int mS){
         if(x.padre == null){
             return mS;
@@ -46,6 +49,7 @@ class creazioneGrafoGriglia {
         return tuttoCammino(x.padre, (x.costoPercorso > mS) ? x.costoPercorso : mS);
     }
 
+    // =================== DIJKSTRA ======================
     static void camminiMinimi(Nodo x){
         for(Nodo n: grafo){
             n.costoPercorso = Integer.MAX_VALUE;

@@ -1,25 +1,4 @@
-Case #1: 5
-Case #2: 1
-Case #3: 1
-Case #4: 7
-Case #5: 3
-Case #6: 28
-Case #7: 96
-Case #8: 78
-Case #9: 3
-Case #10: 88
-Case #11: 85
-Case #12: 98
-Case #13: 93
-Case #14: 87
-Case #15: 12
-Case #16: 986
-Case #17: 734
-Case #18: 974
-Case #19: 434
-Case #20: 978
-Case #21: 801
-Case #22: 439
-Case #23: 832
-Case #24: 993
-Case #25: 979
+0 19
+6 15
+0 15
+0 17

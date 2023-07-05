@@ -1,0 +1,88 @@
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class muraglia {
+    int N = 0;
+    int size;
+    int[] st;
+
+    static int MIN = Integer.MIN_VALUE
+
+    public class Nodo{
+        int index;
+        int[] lr = new int[2];
+
+        public Nodo(int i, int[] coppia){
+            index = i;
+            lr[0] = coppia[0];
+            lr[1] = coppia[1];
+        }
+
+        public int getMiddle() {
+            return (this.lr[0] + this.lr[1]) / 2;
+        }
+    }
+
+    void chiedi(int x, int[] startEnd) {
+        int s = 0, d = N-1;
+        int idX = pos[x];
+        int hX = mura[idX][0];
+        int id = 0;
+
+        for (int i = idX+1; i < N; i++) {
+            if(mura[i][0] != hX){
+                id = mura[i][1];
+                if(id > x && id < d){
+                    d = id;
+                }
+                if(id < x && id > s){
+                    s = id;
+                }
+            }
+        }
+        startEnd[0] = s; // start
+        startEnd[1] = d; // end
+    }
+
+    public void cambia(Nodo n, int x, int h){
+        if(n.lr[0] == n.lr[1]){
+            st[n.index] = h;
+        }
+        else{
+            int middle = n.getMiddle();
+            if(x <= middle){
+                cambia(new Nodo(n.index*2, new int[]{n.lr[0], middle}, x, h);
+            }else{
+                cambia(new Nodo(n.index*2+1, new Range(middle+1, n.range.second)), x, h);
+            }
+
+            st[n.index] = Math.max(st[n.index*2], st[n.index*2+1]);
+        }
+    }
+
+    public void cambia(int x, int h) {
+        int pos = N + x;
+        cambia(new Nodo(1, new int[]{0, N-1}), x, h);
+        return;
+    }
+
+    void inizializza(int N, int[] H) {
+        this.N = N;
+        size = 2 << ((int)Math.ceil(Math.log(N) / Math.log(2)) - 1);
+        st = new int[N*2];
+        
+        for (int i = 0; i < 2*N; i++) {
+            st[i] = Integer.MIN_VALUE;
+        }
+        for (int i = 0; i < N; i++) {
+            st[N+i] = H[i];
+        }
+
+        int i = (N + N)/2;
+        while (i > 0) {
+            st[i] = Math.max(st[2*i], st[2*i+1]);
+            i--;
+        }
+    }
+}
+
