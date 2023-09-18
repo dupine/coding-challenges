@@ -1,88 +1,61 @@
-import java.util.Arrays;
-import java.util.Comparator;
-
 public class muraglia {
-    int N = 0;
     int size;
-    int[] st;
+    int N, realSize;
+    int nodi[];
 
-    static int MIN = Integer.MIN_VALUE
-
-    public class Nodo{
-        int index;
-        int[] lr = new int[2];
-
-        public Nodo(int i, int[] coppia){
-            index = i;
-            lr[0] = coppia[0];
-            lr[1] = coppia[1];
-        }
-
-        public int getMiddle() {
-            return (this.lr[0] + this.lr[1]) / 2;
-        }
+    void chiedi(int x, int[] nodiartEnd) {
+        nodiartEnd[0] = nodi[1] == nodi[size+x] ? 0   : left(x, nodi[size+x], 1, 1, size)-1;
+        nodiartEnd[1] = nodi[1] == nodi[size+x] ? N-1 : right(x, nodi[size+x], 1, 1, size)-1;
     }
 
-    void chiedi(int x, int[] startEnd) {
-        int s = 0, d = N-1;
-        int idX = pos[x];
-        int hX = mura[idX][0];
-        int id = 0;
+    int left(int x, int h, int i, int l, int r){
+        
+        if(l == r) return r;
 
-        for (int i = idX+1; i < N; i++) {
-            if(mura[i][0] != hX){
-                id = mura[i][1];
-                if(id > x && id < d){
-                    d = id;
-                }
-                if(id < x && id > s){
-                    s = id;
-                }
-            }
-        }
-        startEnd[0] = s; // start
-        startEnd[1] = d; // end
+        int ll = 1, rr = 1;
+        if(nodi[2*i] > h) 
+            ll = left(x, h, 2 * i, l, (l+r)/2);
+        if(nodi[2*i+1] > h && x > (l+r)/2) 
+            rr = left(x, h, 2 * i + 1, (l+r)/2+1, r);
+
+        return Math.max(ll, rr);
     }
 
-    public void cambia(Nodo n, int x, int h){
-        if(n.lr[0] == n.lr[1]){
-            st[n.index] = h;
-        }
-        else{
-            int middle = n.getMiddle();
-            if(x <= middle){
-                cambia(new Nodo(n.index*2, new int[]{n.lr[0], middle}, x, h);
-            }else{
-                cambia(new Nodo(n.index*2+1, new Range(middle+1, n.range.second)), x, h);
-            }
+    int right(int x, int h, int i, int l, int r){
+        if(l == r) return r;
 
-            st[n.index] = Math.max(st[n.index*2], st[n.index*2+1]);
-        }
+        int ll = N, rr = N;
+        if(nodi[2*i] > h && x < (l+r)/2) 
+            ll = right(x, h, 2 * i, l, (l+r)/2);
+        if(nodi[2*i+1] > h) 
+            rr = right(x, h, 2 * i + 1, (l+r)/2+1, r);
+
+        return Math.min(ll, rr);
     }
 
-    public void cambia(int x, int h) {
-        int pos = N + x;
-        cambia(new Nodo(1, new int[]{0, N-1}), x, h);
-        return;
+    void cambia(int x, int h) {
+        int u = size + x;
+        nodi[u] = h;
+
+        while(u > 1){
+            u /= 2;
+            nodi[u] = Math.max(nodi[2*u], nodi[2*u+1]);
+        }
     }
 
     void inizializza(int N, int[] H) {
         this.N = N;
         size = 2 << ((int)Math.ceil(Math.log(N) / Math.log(2)) - 1);
-        st = new int[N*2];
-        
-        for (int i = 0; i < 2*N; i++) {
-            st[i] = Integer.MIN_VALUE;
-        }
+        nodi = new int[size*2];
+
         for (int i = 0; i < N; i++) {
-            st[N+i] = H[i];
+            nodi[size+i] = H[i];
         }
 
-        int i = (N + N)/2;
-        while (i > 0) {
-            st[i] = Math.max(st[2*i], st[2*i+1]);
+        int i = (size + N)/2;
+        do {
+            nodi[i] = Math.max(nodi[2*i], nodi[2*i+1]);
             i--;
-        }
+        } while (i > 0);
     }
 }
-

@@ -17,14 +17,18 @@ public class grader {
 
 			if (tipo.equals("Q")) {
 				int x = scn.nextInt();
+				long t = System.nanoTime();
 				mur.chiedi(x, pair);
+				System.out.println("chiedi: "+ (System.nanoTime()-t));
 				risultato1[R] = pair[0];
 				risultato2[R] = pair[1];
 				R++;
 			} else {
 				int x = scn.nextInt();
 				int h = scn.nextInt();
+				long t = System.nanoTime();
 				mur.cambia(x, h);
+				System.out.println("cambia: "+ (System.nanoTime()-t));
 			}
 		}
 	}
