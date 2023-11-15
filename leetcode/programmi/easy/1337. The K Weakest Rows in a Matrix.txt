@@ -1,0 +1,22 @@
+class Solution {
+    public static int[] kWeakestRows(int[][] mat, int k) {
+        
+        int cp[][] = new int[mat.length][2];
+
+        for (int i = 0; i < mat.length; i++) {
+            cp[i][0] = i;
+            for (int val : mat[i]) {
+                cp[i][1] += val;
+            }
+        }
+
+        Arrays.sort(cp, (a, b) -> a[1] == b[1] ? a[0] - b[0] : a[1] - b[1]);
+
+        int r[] = new int[k];
+        for (int j = 0; j < k; j++) {
+            r[j] = cp[j][0];
+        }
+
+        return r;
+    }
+}
